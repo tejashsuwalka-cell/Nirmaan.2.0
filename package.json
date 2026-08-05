@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "firebase": "^12.17.0"
-  }
+  "name": "nirmaan-2.0",
+  "version": "1.0.0",
+  "dependencies": {}
 }

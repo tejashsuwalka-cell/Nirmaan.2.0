@@ -57,3 +57,4 @@ async def login(credentials: UserLogin):
             email=user_doc["email"]
         )
     )
+

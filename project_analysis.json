@@ -1,0 +1,227 @@
+{
+  "project_name": "NIRMAAN 2.0",
+  "tagline": "Blueprint to 2D/3D Home Design Editor",
+  "version": "1.0.0",
+  "description": "Comprehensive backend architecture for NIRMAAN 2.0 featuring a FastAPI RESTful asynchronous API, MongoDB database integration, and JWT security.",
+  "tech_stack": {
+    "backend": {
+      "framework": "FastAPI (>=0.100.0)",
+      "server": "Uvicorn (>=0.22.0)",
+      "language": "Python 3.x",
+      "database_driver": "Motor (AsyncIOMotorClient >=3.3.0)",
+      "authentication": "JWT via python-jose[cryptography] (>=3.3.0) & HTTPBearer",
+      "password_hashing": "Passlib (1.7.4) with Bcrypt (4.0.1)",
+      "validation": "Pydantic v2 (>=2.0.0) with EmailValidator",
+      "environment_config": "python-dotenv (>=1.0.0)"
+    },
+    "database": {
+      "type": "MongoDB",
+      "client": "Motor AsyncIOMotorClient",
+      "tls_settings": "tlsCAFile with Certifi (SSL certificate validation enabled)"
+    }
+  },
+  "directory_structure": {
+    "backend/": {
+      "main.py": "Application entry point, FastAPI instance, CORS middleware, lifespan events, router inclusions",
+      "database.py": "MongoDB client initialization, database connection getter, index creation, lifecycle handlers",
+      "requirements.txt": "Python dependencies for FastAPI, Motor, Pydantic, Passlib, PyJWT, Uvicorn",
+      ".env.example": "Template for environment configuration variables",
+      "auth/": {
+        "__init__.py": "Package identifier",
+        "routes.py": "Endpoints for user registration and authentication login",
+        "schemas.py": "Pydantic models for UserRegister, UserLogin, UserResponse, TokenResponse",
+        "security.py": "Password hashing (bcrypt) and JWT access token creation and decoding logic"
+      },
+      "projects/": {
+        "__init__.py": "Package identifier",
+        "routes.py": "CRUD endpoints for project management and authorization dependency (get_current_user_id)",
+        "schemas.py": "Pydantic models for Wall, Door, Window, ProjectCreate, ProjectUpdate, ProjectResponse"
+      }
+    },
+    "package.json": "Node package manifest"
+  },
+  "api_endpoints": [
+    {
+      "path": "/health",
+      "method": "GET",
+      "tags": ["Health Check"],
+      "auth_required": false,
+      "description": "Health status check returning status ok"
+    },
+    {
+      "path": "/api/auth/register",
+      "method": "POST",
+      "tags": ["Authentication"],
+      "auth_required": false,
+      "request_model": "UserRegister",
+      "response_model": "UserResponse",
+      "description": "Register a new user account with unique email validation"
+    },
+    {
+      "path": "/api/auth/login",
+      "method": "POST",
+      "tags": ["Authentication"],
+      "auth_required": false,
+      "request_model": "UserLogin",
+      "response_model": "TokenResponse",
+      "description": "Authenticate user credentials and generate JWT bearer access token"
+    },
+    {
+      "path": "/api/projects",
+      "method": "GET",
+      "tags": ["Projects"],
+      "auth_required": true,
+      "response_model": "List[ProjectResponse]",
+      "description": "Retrieve all design projects owned by the logged-in user"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST",
+      "tags": ["Projects"],
+      "auth_required": true,
+      "request_model": "ProjectCreate",
+      "response_model": "ProjectResponse",
+      "description": "Create a new 2D/3D home design project with walls, doors, and windows"
+    },
+    {
+      "path": "/api/projects/{project_id}",
+      "method": "GET",
+      "tags": ["Projects"],
+      "auth_required": true,
+      "response_model": "ProjectResponse",
+      "description": "Fetch specific project details by ID with owner authorization check"
+    },
+    {
+      "path": "/api/projects/{project_id}",
+      "method": "PUT",
+      "tags": ["Projects"],
+      "auth_required": true,
+      "request_model": "ProjectUpdate",
+      "response_model": "ProjectResponse",
+      "description": "Update existing project details or element layouts (walls, doors, windows)"
+    },
+    {
+      "path": "/api/projects/{project_id}",
+      "method": "DELETE",
+      "tags": ["Projects"],
+      "auth_required": true,
+      "description": "Delete a project by ID with owner authorization verification"
+    }
+  ],
+  "data_schemas": {
+    "Auth": {
+      "UserRegister": {
+        "name": "string (min_length: 1)",
+        "email": "EmailStr",
+        "password": "string (min_length: 6)"
+      },
+      "UserLogin": {
+        "email": "EmailStr",
+        "password": "string"
+      },
+      "UserResponse": {
+        "id": "string",
+        "name": "string",
+        "email": "EmailStr"
+      },
+      "TokenResponse": {
+        "access_token": "string",
+        "token_type": "string (default: 'bearer')",
+        "user": "Optional[UserResponse]"
+      }
+    },
+    "Projects": {
+      "Wall": {
+        "id": "string",
+        "x1": "float",
+        "y1": "float",
+        "x2": "float",
+        "y2": "float",
+        "thickness": "float (default: 14.0)",
+        "height": "Optional[float] (default: 150.0)",
+        "color": "Optional[str] (default: '#1e293b')"
+      },
+      "Door": {
+        "id": "string",
+        "wallId": "Optional[str]",
+        "x": "float",
+        "y": "float",
+        "width": "float (default: 50.0)",
+        "swing": "Optional[str] (default: 'left')"
+      },
+      "Window": {
+        "id": "string",
+        "wallId": "Optional[str]",
+        "x": "float",
+        "y": "float",
+        "width": "float (default: 70.0)",
+        "height": "Optional[float] (default: 50.0)",
+        "sillHeight": "Optional[float] (default: 40.0)"
+      },
+      "ProjectCreate": {
+        "name": "string (min_length: 1)",
+        "type": "Optional[str] (default: 'Residential Design')",
+        "walls": "Optional[List[Wall]]",
+        "doors": "Optional[List[Door]]",
+        "windows": "Optional[List[Window]]"
+      },
+      "ProjectUpdate": {
+        "name": "Optional[str]",
+        "type": "Optional[str]",
+        "walls": "Optional[List[Wall]]",
+        "doors": "Optional[List[Door]]",
+        "windows": "Optional[List[Window]]"
+      },
+      "ProjectResponse": {
+        "id": "string",
+        "name": "string",
+        "type": "Optional[str]",
+        "owner_id": "string",
+        "walls": "List[Wall]",
+        "doors": "List[Door]",
+        "windows": "List[Window]",
+        "created_at": "string (ISO timestamp)",
+        "updated_at": "string (ISO timestamp)"
+      }
+    }
+  },
+  "database_indexes": [
+    {
+      "collection": "users",
+      "fields": { "email": 1 },
+      "unique": true
+    },
+    {
+      "collection": "projects",
+      "fields": { "owner_id": 1 },
+      "unique": false
+    }
+  ],
+  "environment_variables": [
+    {
+      "key": "MONGO_URI",
+      "description": "MongoDB Connection String URI",
+      "default": "mongodb://localhost:27017"
+    },
+    {
+      "key": "DB_NAME",
+      "description": "Target MongoDB Database Name",
+      "default": "nirmaan_db"
+    },
+    {
+      "key": "JWT_SECRET",
+      "description": "Secret Key used for signing JWT tokens",
+      "default": "super_secret_jwt_key"
+    },
+    {
+      "key": "JWT_EXPIRE_HOURS",
+      "description": "Expiration duration in hours for JWT tokens",
+      "default": "24"
+    },
+    {
+      "key": "CORS_ORIGINS",
+      "description": "Allowed origins for CORS policy (comma-separated)",
+      "default": "*"
+    }
+  ]
+}
