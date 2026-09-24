@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIRMAAN 2.0 - Architecture & Tech Presentation</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #24324f;
+      --cyan: #06b6d4;
+      --indigo: #6366f1;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #cbd5e1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+    .header { max-width: 1100px; width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .badge { background: #1e293b; border: 1px solid var(--cyan); color: var(--cyan); padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .controls { display: flex; gap: 10px; align-items: center; }
+    button { background: #1e293b; color: white; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    button:hover { background: #334155; border-color: var(--cyan); }
+    .slide-counter { color: var(--text-muted); font-size: 14px; font-weight: 600; min-width: 80px; text-align: center; }
+    .deck-container { max-width: 1100px; width: 100%; aspect-ratio: 16/9; min-height: 600px; position: relative; perspective: 1000px; }
+    .slide {
+      position: absolute; inset: 0; background: #0f172a; border: 1px solid #334155; border-radius: 16px; padding: 48px;
+      display: none; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s ease;
+    }
+    .slide.active { display: flex; opacity: 1; }
+    .slide-tag { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
+    .slide-title { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+    .slide-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; flex: 1; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; flex: 1; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+    .card {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px;
+      display: flex; flex-direction: column; transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: white; display: flex; align-items: center; gap: 8px; }
+    .card-sub { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px; }
+    .card ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .card li { font-size: 13px; color: var(--text-light); line-height: 1.4; display: flex; align-items: flex-start; gap: 8px; }
+    .card li::before { content: "•"; color: var(--cyan); font-weight: bold; }
+    .metric-value { font-size: 32px; font-weight: 800; margin: 8px 0; }
+    .banner { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 24px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="badge">NIRMAAN 2.0 Slide Deck</div>
+    <div class="controls">
+      <button onclick="prevSlide()">◀ Previous</button>
+      <span class="slide-counter" id="counter">1 / 6</span>
+      <button onclick="nextSlide()">Next ▶</button>
+    </div>
+  </div>
+
+  <div class="deck-container">
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-1">
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+        <span class="slide-tag" style="background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid var(--cyan); width: fit-content;">ARCHITECTURE & CAD SYSTEM</span>
+        <h1 style="font-size: 52px; font-weight: 900; margin-top: 10px;">NIRMAAN 2.0</h1>
+        <p style="font-size: 22px; color: var(--indigo); font-weight: 700; margin-bottom: 16px;">Blueprint to 2D/3D Real-time Design Editor & Layout Auditor</p>
+        <p style="font-size: 15px; color: var(--text-muted); max-width: 800px; margin-bottom: 40px; line-height: 1.6;">
+          A modern full-stack web CAD ecosystem combining precision 2D floor planning, interactive Three.js 3D spatial rendering, and instant automated architectural compliance auditing.
+        </p>
+        <div class="grid-4" style="margin-bottom: 0;">
+          <div class="card" style="border-color: var(--cyan);">
+            <div class="card-title" style="color: var(--cyan);">🎨 2D Drafting</div>
+            <div class="card-sub">HTML5 Precision Canvas</div>
+          </div>
+          <div class="card" style="border-color: var(--purple);">
+            <div class="card-title" style="color: var(--purple);">🧊 3D WebGL</div>
+            <div class="card-sub">Three.js Spatial Engine</div>
+          </div>
+          <div class="card" style="border-color: var(--indigo);">
+            <div class="card-title" style="color: var(--indigo);">⚡ FastAPI Core</div>
+            <div class="card-sub">Async Python REST</div>
+          </div>
+          <div class="card" style="border-color: var(--emerald);">
+            <div class="card-title" style="color: var(--emerald);">🛡️ Audit Engine</div>
+            <div class="card-sub">Real-Time Rule Scoring</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-2">
+      <span class="slide-tag" style="background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid var(--cyan); width: fit-content;">END-TO-END FLOW</span>
+      <h2 class="slide-title">Full-Stack System Architecture</h2>
+      <p class="slide-sub">Data flows seamlessly from browser canvas to async backend and reactive database</p>
+      <div class="grid-3">
+        <div class="card" style="border-color: var(--cyan);">
+          <div style="font-size: 11px; font-weight: 800; color: var(--cyan);">LAYER 01</div>
+          <div class="card-title">CLIENT TIER</div>
+          <div class="card-sub" style="color: var(--cyan);">React 19 + Three.js + Canvas</div>
+          <ul>
+            <li>Vite 8 Ultra-fast Dev Server</li>
+            <li>HTML5 Canvas 2D Vector CAD</li>
+            <li>Three.js 3D Extrusion & Mesh</li>
+            <li>Zustand State & TailwindCSS v4</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--indigo);">
+          <div style="font-size: 11px; font-weight: 800; color: var(--indigo);">LAYER 02</div>
+          <div class="card-title">API & LOGIC TIER</div>
+          <div class="card-sub" style="color: var(--indigo);">FastAPI + Uvicorn</div>
+          <ul>
+            <li>Asynchronous Non-blocking IO</li>
+            <li>Pydantic v2 Schema Validation</li>
+            <li>JWT Token Bearer Authentication</li>
+            <li>Deterministic Layout Audit Engine</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--emerald);">
+          <div style="font-size: 11px; font-weight: 800; color: var(--emerald);">LAYER 03</div>
+          <div class="card-title">DATABASE TIER</div>
+          <div class="card-sub" style="color: var(--emerald);">MongoDB + Motor</div>
+          <ul>
+            <li>Motor Async Python Driver</li>
+            <li>Optimized Unique Email Indexes</li>
+            <li>Fast Project Lookups via owner_id</li>
+            <li>SSL/TLS Certifi Cloud Security</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-3">
+      <span class="slide-tag" style="background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid var(--purple); width: fit-content;">VISUAL EXPERIENCE</span>
+      <h2 class="slide-title">Dual-Engine Interactive Frontend</h2>
+      <p class="slide-sub">Synchronized 2D architectural drafting with real-time 3D spatial viewport</p>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--cyan);">
+          <div class="card-title" style="color: var(--cyan);">📐 2D Precision Drafting Engine</div>
+          <div class="card-sub">HTML5 Canvas Custom CAD Pipeline</div>
+          <ul>
+            <li><b>Snap-to-Grid & Alignment:</b> Vector mathematical snapping for millimeter-accurate wall joints.</li>
+            <li><b>Interactive Drawing Tools:</b> Real-time wall generation, door inserts, and window placements.</li>
+            <li><b>Infinite Pan & Zoom:</b> Dynamic coordinate transformation matrix for large-scale blueprints.</li>
+            <li><b>Zero Overhead:</b> Pure hardware-accelerated 2D context without bloated CAD dependencies.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--purple);">
+          <div class="card-title" style="color: var(--purple);">🧊 3D WebGL Spatial Viewport</div>
+          <div class="card-sub">Three.js Mesh Extrusion Engine</div>
+          <ul>
+            <li><b>Real-Time Wall Extrusion:</b> Elevates 2D coordinate vectors into 3D solid wall geometries.</li>
+            <li><b>Dynamic Studio Lighting:</b> Ambient & directional light sources providing depth and drop shadows.</li>
+            <li><b>Free Orbit & Camera Controls:</b> Perspective camera with 360° pan, pitch, and distance controls.</li>
+            <li><b>Surface & Floor Materials:</b> Realistic textures, floor planes, and architectural shaders.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-4">
+      <span class="slide-tag" style="background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid var(--amber); width: fit-content;">INTELLIGENCE & RULES</span>
+      <h2 class="slide-title">Automated Blueprint Audit Engine</h2>
+      <p class="slide-sub">Sub-millisecond rule-based compliance scoring checking architectural feasibility</p>
+      <div class="grid-4">
+        <div class="card" style="border-color: var(--cyan);">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">BASE SCORE</div>
+          <div class="metric-value" style="color: var(--cyan);">100 Pts</div>
+          <p style="font-size: 12px; color: var(--text-light);">Initial pristine blueprint score before evaluation.</p>
+        </div>
+        <div class="card" style="border-color: var(--amber);">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ENCLOSURE CHECK</div>
+          <div class="metric-value" style="color: var(--amber);">-25 Pts</div>
+          <p style="font-size: 12px; color: var(--text-light);">Requires ≥ 4 walls for complete structural enclosure.</p>
+        </div>
+        <div class="card" style="border-color: var(--purple);">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ACCESSIBILITY</div>
+          <div class="metric-value" style="color: var(--purple);">-25 Pts</div>
+          <p style="font-size: 12px; color: var(--text-light);">Requires at least 1 entry door for safe passage.</p>
+        </div>
+        <div class="card" style="border-color: var(--emerald);">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">LIGHT & AIR</div>
+          <div class="metric-value" style="color: var(--emerald);">-15 Pts</div>
+          <p style="font-size: 12px; color: var(--text-light);">Penalizes zero windows; rewards natural daylight.</p>
+        </div>
+      </div>
+      <div class="banner">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">⚡ Backend Execution Highlights (FastAPI Core)</div>
+        <p style="font-size: 13px; color: var(--text-light); line-height: 1.6;">
+          • <b>Deterministic & Zero I/O:</b> Calculates in microseconds in-memory without blocking external calls.<br>
+          • <b>Instant Feedback:</b> Live score bar (0-100), warnings, architectural suggestions, and safety tips.<br>
+          • <b>Pydantic v2 Type Safety:</b> Strict schema validation guarantees blueprint coordinate integrity.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-5">
+      <span class="slide-tag" style="background: rgba(16,185,129,0.15); color: var(--emerald); border: 1px solid var(--emerald); width: fit-content;">CLOUD & SECURITY</span>
+      <h2 class="slide-title">Data Persistence & Enterprise Auth</h2>
+      <p class="slide-sub">Robust asynchronous MongoDB document store backed by industry-standard JWT security</p>
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--indigo);">
+          <div class="card-title" style="color: var(--indigo);">🔐 Identity & Security Pipeline</div>
+          <div class="card-sub">Stateless OAuth2 & Cryptographic Hashes</div>
+          <ul>
+            <li><b>OAuth2 Password Bearer Flow:</b> RFC-compliant authorization header exchange.</li>
+            <li><b>Cryptographic JWT Tokens:</b> HS256 signed tokens managed via python-jose with expiry.</li>
+            <li><b>Bcrypt Password Hashing:</b> Salted password hashing via passlib preventing credential leaks.</li>
+            <li><b>Strict CORS Whitelisting:</b> Configurable origins protecting against cross-site attacks.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--emerald);">
+          <div class="card-title" style="color: var(--emerald);">🍃 Reactive MongoDB Architecture</div>
+          <div class="card-sub">Motor Async Driver & Cloud Clustering</div>
+          <ul>
+            <li><b>Motor Async Engine:</b> Event-loop driven driver preventing thread bottlenecks on concurrent edits.</li>
+            <li><b>Automatic Startup Indexing:</b> Unique index on `email` and fast query index on `owner_id`.</li>
+            <li><b>Cloud TLS / Certifi:</b> Out-of-the-box secure TLS connection to MongoDB Atlas.</li>
+            <li><b>Flexible JSON Blueprints:</b> Document store effortlessly persists dynamic wall/door/window arrays.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-6">
+      <span class="slide-tag" style="background: rgba(6,182,212,0.15); color: var(--cyan); border: 1px solid var(--cyan); width: fit-content;">QUALITY ASSURANCE</span>
+      <h2 class="slide-title">Testing & Verification Ecosystem</h2>
+      <p class="slide-sub">360-degree quality gates from automated browser workflows to async API suites</p>
+      <div class="grid-3">
+        <div class="card" style="border-color: var(--cyan);">
+          <div style="font-size: 11px; font-weight: 800; color: var(--cyan);">E2E BROWSER TESTING</div>
+          <div class="card-title">Playwright Suite</div>
+          <div class="card-sub" style="color: var(--cyan);">Chromium E2E Automation</div>
+          <ul>
+            <li>Automated browser testing</li>
+            <li>Full user registration & login flows</li>
+            <li>Canvas click & blueprint interaction tests</li>
+            <li>Trace recordings on first-retry</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--indigo);">
+          <div style="font-size: 11px; font-weight: 800; color: var(--indigo);">BACKEND API TESTING</div>
+          <div class="card-title">Pytest 8 + HTTPX</div>
+          <div class="card-sub" style="color: var(--indigo);">Async ASGI Tests</div>
+          <ul>
+            <li>In-memory ASGITransport test client</li>
+            <li>Comprehensive Auth + Project CRUD cycles</li>
+            <li>Audit engine scoring verification</li>
+            <li>Pytest-asyncio concurrent execution</li>
+          </ul>
+        </div>
+        <div class="card" style="border-color: var(--emerald);">
+          <div style="font-size: 11px; font-weight: 800; color: var(--emerald);">STATIC CODE QUALITY</div>
+          <div class="card-title">Oxlint Engine</div>
+          <div class="card-sub" style="color: var(--emerald);">Sub-second Linting</div>
+          <ul>
+            <li>Next-gen Rust-powered JavaScript linter</li>
+            <li>Detects React hook anti-patterns instantly</li>
+            <li>Maintains strict code hygiene</li>
+            <li>50x faster than legacy ESLint setups</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function showSlide(index) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const active = document.getElementById(`slide-${index}`);
+      if (active) active.classList.add('active');
+      document.getElementById('counter').innerText = `${index} / ${totalSlides}`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        showSlide(currentSlide);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        showSlide(currentSlide);
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+  </script>
+</body>
+</html>

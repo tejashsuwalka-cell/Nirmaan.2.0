@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
+import { ArrowRight, Lock, Mail, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -8,6 +9,10 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const { login, isLoading, error, clearError } = useAuthStore();
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,78 +26,85 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50/60 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-indigo-500 selection:text-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
+        <div className="flex justify-center items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/25">
             N
           </div>
-          <span className="text-2xl font-extrabold text-white tracking-tight">NIRMAAN 2.0</span>
+          <span className="text-2xl font-black text-slate-900 tracking-tight">
+            NIRMAAN <span className="text-indigo-600 font-bold">2.0</span>
+          </span>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-slate-100">
-          Sign in to your account
+        <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-slate-900">
+          Welcome back
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-400">
+        <p className="mt-2 text-center text-sm text-slate-500 font-medium">
           Or{' '}
-          <Link to="/register" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+          <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
             create a new account
           </Link>
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-slate-900/80 backdrop-blur-md py-8 px-4 shadow-2xl border border-slate-800 sm:rounded-2xl sm:px-10">
+        <div className="glass-panel p-8 sm:p-10 shadow-2xl rounded-3xl border border-white/90 relative">
           {error && (
-            <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-sm text-red-400 flex items-center gap-2">
-              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
+            <div className="mb-6 bg-red-50/80 border border-red-200/80 rounded-2xl p-4 text-xs font-semibold text-red-600 flex items-center gap-2.5 shadow-sm">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
               <span>{error}</span>
             </div>
           )}
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium text-slate-300">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
                 Email address
               </label>
-              <div className="mt-1">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-4 h-4" />
+                </div>
                 <input
                   id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg bg-slate-950 border border-slate-800 px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm transition-colors"
-                  placeholder="you@example.com"
+                  className="w-full rounded-xl glass-input pl-10 pr-4 py-3 text-slate-900 placeholder-slate-400 text-sm font-medium transition-all"
+                  placeholder="name@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
                 Password
               </label>
-              <div className="mt-1">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-4 h-4" />
+                </div>
                 <input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg bg-slate-950 border border-slate-800 px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm transition-colors"
+                  className="w-full rounded-xl glass-input pl-10 pr-4 py-3 text-slate-900 placeholder-slate-400 text-sm font-medium transition-all"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg shadow-indigo-600/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 focus:outline-none shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading ? 'Signing in...' : 'Sign in to Account'}
+                {!isLoading && <ArrowRight className="w-4 h-4" />}
               </button>
             </div>
           </form>

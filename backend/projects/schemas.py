@@ -32,12 +32,22 @@ class Window(BaseModel):
     sillHeight: Optional[float] = 40.0
 
 
+class FurnitureItem(BaseModel):
+    id: str
+    type: str
+    x: float
+    y: float
+    rotation: Optional[float] = 0.0
+    scale: Optional[float] = 1.0
+
+
 class ProjectCreate(BaseModel):
     name: str = Field(..., min_length=1, description="Project name")
     type: Optional[str] = "Residential Design"
     walls: Optional[List[Wall]] = []
     doors: Optional[List[Door]] = []
     windows: Optional[List[Window]] = []
+    furniture: Optional[List[FurnitureItem]] = []
 
 
 class ProjectUpdate(BaseModel):
@@ -46,6 +56,7 @@ class ProjectUpdate(BaseModel):
     walls: Optional[List[Wall]] = None
     doors: Optional[List[Door]] = None
     windows: Optional[List[Window]] = None
+    furniture: Optional[List[FurnitureItem]] = None
 
 
 class ProjectResponse(BaseModel):
@@ -56,5 +67,6 @@ class ProjectResponse(BaseModel):
     walls: List[Wall] = []
     doors: List[Door] = []
     windows: List[Window] = []
+    furniture: List[FurnitureItem] = []
     created_at: str
     updated_at: str

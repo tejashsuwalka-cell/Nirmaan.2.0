@@ -47,6 +47,7 @@ async def create_project(
     walls_data = [w.model_dump() for w in project.walls] if project.walls else []
     doors_data = [d.model_dump() for d in project.doors] if project.doors else []
     windows_data = [w.model_dump() for w in project.windows] if project.windows else []
+    furniture_data = [f.model_dump() for f in project.furniture] if project.furniture else []
 
     project_doc = {
         "_id": project_id,
@@ -57,6 +58,7 @@ async def create_project(
         "walls": walls_data,
         "doors": doors_data,
         "windows": windows_data,
+        "furniture": furniture_data,
         "created_at": now,
         "updated_at": now,
     }
@@ -120,17 +122,24 @@ async def update_project(
         update_fields["doors"] = [d.model_dump() for d in project_update.doors]
     if project_update.windows is not None:
         update_fields["windows"] = [w.model_dump() for w in project_update.windows]
+    if project_update.furniture is not None:
+        update_fields["furniture"] = [f.model_dump() for f in project_update.furniture]
 
     update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
 
     await db.projects.update_one(
-        {"$or": [{"id": project_id}, {"_id": project_id}]},
+        {"$or": [{"id": project_id}, {"_id": project_id}], "owner_id": current_user_id},
         {"$set": update_fields},
     )
 
     updated_proj = await db.projects.find_one(
-        {"$or": [{"id": project_id}, {"_id": project_id}]}
+        {"$or": [{"id": project_id}, {"_id": project_id}], "owner_id": current_user_id}
     )
+    if not updated_proj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found",
+        )
     return ProjectResponse(**updated_proj)
 
 
@@ -155,6 +164,6 @@ async def delete_project(
         )
 
     await db.projects.delete_one(
-        {"$or": [{"id": project_id}, {"_id": project_id}]}
+        {"$or": [{"id": project_id}, {"_id": project_id}], "owner_id": current_user_id}
     )
     return {"message": "Project deleted successfully"}

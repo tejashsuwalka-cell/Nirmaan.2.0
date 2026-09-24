@@ -8,9 +8,13 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = os.getenv("DB_NAME", "nirmaan_db")
 
+client_kwargs = {}
+if "tls=true" in MONGO_URI.lower() or "ssl=true" in MONGO_URI.lower() or MONGO_URI.startswith("mongodb+srv://") or os.getenv("MONGO_TLS", "").lower() == "true":
+    client_kwargs["tlsCAFile"] = certifi.where()
+
 client = AsyncIOMotorClient(
     MONGO_URI,
-    tlsCAFile=certifi.where()
+    **client_kwargs
 )
 db = client[DB_NAME]
 

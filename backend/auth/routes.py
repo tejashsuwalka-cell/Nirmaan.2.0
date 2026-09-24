@@ -9,7 +9,8 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register(user: UserRegister):
-    existing_user = await db.users.find_one({"email": user.email})
+    email_clean = user.email.lower().strip()
+    existing_user = await db.users.find_one({"email": email_clean})
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -22,8 +23,8 @@ async def register(user: UserRegister):
     user_doc = {
         "_id": user_id,
         "id": user_id,
-        "name": user.name,
-        "email": user.email,
+        "name": user.name.strip(),
+        "email": email_clean,
         "password": hashed_pwd
     }
 
@@ -31,14 +32,15 @@ async def register(user: UserRegister):
 
     return UserResponse(
         id=user_id,
-        name=user.name,
-        email=user.email
+        name=user_doc["name"],
+        email=email_clean
     )
 
 
 @router.post("/login", response_model=TokenResponse)
 async def login(credentials: UserLogin):
-    user_doc = await db.users.find_one({"email": credentials.email})
+    email_clean = credentials.email.lower().strip()
+    user_doc = await db.users.find_one({"email": email_clean})
     if not user_doc or not verify_password(credentials.password, user_doc["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
